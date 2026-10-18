@@ -36,10 +36,19 @@ class Server:
         try:
             with urllib.request.urlopen(req) as response:
                 body = response.read().decode()
-                return response.status, json.loads(body) if body else None
         except HTTPError as error:
             body = error.read().decode()
-            return error.code, json.loads(body) if body else None
+            return error.code, self._parse(body)
+        return response.status, self._parse(body)
+
+    @staticmethod
+    def _parse(body):
+        if not body:
+            return None
+        try:
+            return json.loads(body)
+        except ValueError:
+            return body  # raw text, as /identity replies
 
 
 class TaskServiceTests(unittest.TestCase):

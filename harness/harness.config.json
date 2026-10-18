@@ -1,0 +1,8 @@
+{
+  "static": "python -m py_compile app.py",
+  "unit": "python -X utf8 -m unittest discover -s . -p \"test_*.py\"",
+  "unit_count_pattern": "Ran (\\d+) test",
+  "required_checks": "",
+  "protected_paths": "MISSION.md,FACTORY.md,FACTORY_RULES.md,harness/**,.factory/**,factory/**",
+  "description": "Ordinary project checks. Runtime verification runs through the shared Archon workflows against the runtime host."
+}

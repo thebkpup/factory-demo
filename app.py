@@ -66,7 +66,14 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/health":
             self.reply(200, {"status": "ok"})
         elif self.path == "/identity":
-            self.reply(200, os.environ.get("FACTORY_RUNTIME_CANDIDATE") or "dev")
+            # The runtime-host contract: the exact FACTORY_RUNTIME_CANDIDATE string,
+            # raw -- no JSON quoting (the probe compares byte for byte).
+            body = (os.environ.get("FACTORY_RUNTIME_CANDIDATE") or "dev").encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
         elif self.path == "/tasks":
             db = connect()
             tasks = [row(t) for t in db.execute("select id, title, done from tasks order by id")]
